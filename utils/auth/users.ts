@@ -11,7 +11,7 @@ const authorization = {
 };
 
 export async function getUsers() {
-  const users = {};
+  const users:Record<string, any> = {};
   if (NEXTAUTH_USERS) {
     const userPairs = NEXTAUTH_USERS.split(',');
     userPairs.forEach((pair) => {

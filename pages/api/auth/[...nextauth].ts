@@ -14,21 +14,22 @@ export const authOptions: NextAuthOptions = {
               username: { label: "Username", type: "text", placeholder: "jsmith" },
               password: { label: "Password", type: "password" }
             },
-            async authorize(credentials, req) {
-                const { username, password } = credentials;
+            authorize: async function (credentials) {
+                const {username, password} = credentials ?? {}
                 const users = await getUsers();
-                const user = users[username];
+                const user = users[username??''];
                 if (user && user.password === password) {
-                    console.log("login with "+ username)
+                    console.log("login with " + username)
                     // 验证通过，返回用户信息
                     const signingSecret = NEXTAUTH_SECRET;
                     const payload = {
-                      aud: 'authenticated',
-                      exp: Math.floor(new Date().getTime() / 1000),
-                      role: 'authenticated',
-                      user:user.user,
-                      token: jwt.sign(user, signingSecret)
-                    }; 
+                        aud: 'authenticated',
+                        exp: Math.floor(new Date().getTime() / 1000),
+                        role: 'authenticated',
+                        user: user.user,
+                        token: jwt.sign(user, signingSecret),
+                        id: user.username
+                    };
                     return payload
                 }
                 return null;
